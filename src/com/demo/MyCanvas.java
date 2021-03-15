@@ -83,7 +83,7 @@ public class MyCanvas extends Canvas implements MouseListener, MouseMotionListen
         while (true) {
             repaint();
             try {
-                Thread.sleep(10000);
+                Thread.sleep(500);
             } catch (Exception e) {
 
             }
