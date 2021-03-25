@@ -92,21 +92,20 @@ public class PaintGUI extends JFrame {
             int x3 = 20, y3 = -40;
             int x4 = -20, y4 = -40;
 
-            putPixel(x1, y1, 0xff00ff);
-            putPixel(x2, y2, 0xff00ff);
-            putPixel(x3, y3, 0xff00ff);
-            putPixel(x4, y4, 0xff00ff);
 
-            lineBresenham(x1, y1, x2, y2);
-            lineBresenham(x2, y2, x3, y3);
-            lineBresenham(x3, y3, x4, y4);
-            lineBresenham(x1, y1, x4, y4);
+//            lineBresenham(x1, y1, x2, y2);
+//            lineBresenham(x2, y2, x3, y3);
+//            lineBresenham(x3, y3, x4, y4);
+//            lineBresenham(x1, y1, x4, y4);
 
             lineBresenham(0, -59, 0, 59);
             lineBresenham(-99, 0, 99, 0);
 
             if (mx != -1 && my != -1 && mx2 != -1 && my2 != -1) {
-                lineBresenham(mx, my, mx2, my2);
+                lineBresenham(mx, my, mx2, my);
+                lineBresenham(mx2, my, mx2, my2);
+                lineBresenham(mx2, my2, mx, my2);
+                lineBresenham(mx, my2, mx, my);
             }
 
 //            putPixel(0,0,0xff000000);
