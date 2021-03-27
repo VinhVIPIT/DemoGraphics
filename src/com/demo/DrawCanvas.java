@@ -167,8 +167,6 @@ public class DrawCanvas extends Canvas implements Runnable {
         public void mouseMoved(MouseEvent e) {
             super.mouseMoved(e);
 
-
-            // Dong nay them vo cho vui
         }
     }
 
