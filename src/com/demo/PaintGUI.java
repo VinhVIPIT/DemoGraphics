@@ -2,9 +2,7 @@ package com.demo;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.*;
 
 /**
  * Create by VinhIT
@@ -16,9 +14,9 @@ public class PaintGUI extends JFrame {
     private JPanel rootPanel;
     private JButton btnPen;
     private JButton button2;
-    private JButton button3;
+    private JButton btnLine;
     private JButton btnClear;
-    private JButton button5;
+    private JButton btnRect;
     private JButton button6;
     private JButton button7;
     private JButton button8;
@@ -32,6 +30,7 @@ public class PaintGUI extends JFrame {
 
 
 
+
     public PaintGUI() {
         setTitle("Paint");
         setSize(1200, 900);
@@ -39,35 +38,14 @@ public class PaintGUI extends JFrame {
         setResizable(false);
 
         canvas = new DrawCanvas();
-
-        /*canvas.addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                super.mouseDragged(e);
-                if(startPoint != null){
-                    endPoint = Point.fromComputerCoordinate(e.getX()/DrawCanvas.pixelSize, e.getY()/DrawCanvas.pixelSize);
-                    canvas.repaint();
-                }
-            }
-
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                super.mouseMoved(e);
-            }
-        });
-        canvas.addMouseListener(new MouseAdapter() {
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                if(startPoint == null){
-                    startPoint = Point.fromComputerCoordinate(e.getX()/5, e.getY()/5);
-                }
-
-            }
-        });
-*/
         mainPanel.add(canvas);
+
+        btnClear.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                canvas.clearScreen();
+            }
+        });
 
         add(rootPanel);
 

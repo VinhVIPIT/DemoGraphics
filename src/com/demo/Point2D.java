@@ -65,4 +65,8 @@ public class Point2D {
         this.color = color;
     }
 
+
+    public boolean isSamePoint(Point2D point) {
+        return x == point.x && y == point.y && color == point.color;
+    }
 }

@@ -1,30 +1,31 @@
 package com.demo;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Create by VinhIT
  * On 25/03/2021
  */
 
-public class Line {
-
-    private DrawCanvas canvas;
-    private List<Point2D> listPoint2DDraw = new ArrayList<>();
-    private Point2D startPoint2D, endPoint2D;
+public class Line extends Geometry {
 
 
-    public Line(Point2D startPoint2D, Point2D endPoint2D, DrawCanvas canvas) {
-        this.startPoint2D = startPoint2D;
-        this.endPoint2D = endPoint2D;
-        this.canvas = canvas;
+    public Line(DrawCanvas canvas, Point2D startPoint2D, Point2D endPoint2D) {
+        super(canvas, startPoint2D, endPoint2D);
     }
 
-    public void draw() {
-        if (startPoint2D != null && endPoint2D != null) {
-            lineBresenham(startPoint2D.getX(), startPoint2D.getY(), endPoint2D.getX(), endPoint2D.getY());
-            canvas.applyDraw(listPoint2DDraw);
+    public Line(DrawCanvas canvas) {
+        super(canvas);
+    }
+
+
+    @Override
+    public void setupDraw() {
+        if(startPoint != null && endPoint != null) {
+            swapList();
+
+            lineBresenham(startPoint.getX(), startPoint.getY(), endPoint.getX(), endPoint.getY());
+
+            clearOldPoints();
+            drawNewPoints();
         }
     }
 
@@ -43,7 +44,9 @@ public class Line {
             yUnit = -yUnit;
 
         Point2D pt = new Point2D(x, y, 0xff0000);
-        listPoint2DDraw.add(pt);
+        listDraw.add(pt);
+
+        int cnt = 1;
 
         if (Dx >= Dy) {
             p = 2 * Dy - Dx;
@@ -56,8 +59,12 @@ public class Line {
                 }
                 x += xUnit;
 
-                pt = new Point2D(x, y, 0xff0000);
-                listPoint2DDraw.add(pt);
+//                if(cnt%4 < 3){
+                    pt = new Point2D(x, y, 0xff0000);
+                    listDraw.add(pt);
+//                }
+                cnt++;
+
             }
         } else {
             p = 2 * Dx - Dy;
@@ -70,32 +77,20 @@ public class Line {
                 }
                 y += yUnit;
 
-                pt = new Point2D(x, y, 0xff0000);
-                listPoint2DDraw.add(pt);
+//                if(cnt%4 < 3){
+                    pt = new Point2D(x, y, 0xff0000);
+                    listDraw.add(pt);
+//                }
+                cnt++;
+
             }
         }
 
     }
 
-    public void setStartPoint(Point2D startPoint2D) {
-        this.startPoint2D = startPoint2D;
+    @Override
+    public void setEndPoint(Point2D endPoint) {
+        super.setEndPoint(endPoint);
+        setupDraw();
     }
-
-    public void setEndPoint(Point2D endPoint2D) {
-        if(endPoint2D != null){
-            canvas.clearDraw(listPoint2DDraw);
-            listPoint2DDraw.clear();
-            this.endPoint2D = endPoint2D;
-            draw();
-        }
-    }
-
-    public Point2D getStartPoint() {
-        return startPoint2D;
-    }
-
-    public Point2D getEndPoint() {
-        return endPoint2D;
-    }
-
 }

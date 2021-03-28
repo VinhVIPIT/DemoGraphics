@@ -24,12 +24,12 @@
           <text value="Button"/>
         </properties>
       </component>
-      <component id="27051" class="javax.swing.JButton" binding="button3" default-binding="true">
+      <component id="27051" class="javax.swing.JButton" binding="btnLine">
         <constraints>
           <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Button"/>
+          <text value="Line"/>
         </properties>
       </component>
       <component id="90fa1" class="javax.swing.JButton" binding="btnClear">
@@ -40,12 +40,12 @@
           <text value="Clear"/>
         </properties>
       </component>
-      <component id="d2aa7" class="javax.swing.JButton" binding="button5" default-binding="true">
+      <component id="d2aa7" class="javax.swing.JButton" binding="btnRect">
         <constraints>
           <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Button"/>
+          <text value="Rectangle"/>
         </properties>
       </component>
       <component id="6d899" class="javax.swing.JButton" binding="button6" default-binding="true">

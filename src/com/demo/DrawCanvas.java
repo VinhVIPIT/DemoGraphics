@@ -11,33 +11,31 @@ import java.util.List;
  * On 27/03/2021
  */
 
-public class DrawCanvas extends Canvas implements Runnable {
+public class DrawCanvas extends Canvas {
 
     public static final int canvasWidth = 1000, canvasHeight = 600;
     public static final int rowSize = canvasWidth / 5, colSize = canvasHeight / 5;
-
     public static final int pixelSize = 5;
 
     private int[][] board = new int[rowSize + 1][colSize + 1];
-    private int[][] drawingBoard = new int[rowSize + 1][colSize + 1];
+    private int[][] tempBoard = new int[rowSize + 1][colSize + 1];
 
-    private Point2D startPoint2D, endPoint2D;
-
-    private boolean isDrawing = false;
+    public DrawMode drawMode = DrawMode.LINE;
 
     Line line;
+    Rectangle rectangle;
 
 
     public DrawCanvas() {
         setPreferredSize(new Dimension(canvasWidth, canvasHeight));
-        setBackground(new Color(0xffffff));
+        setBackground(new Color(0xFFFFFF));
 
         this.addMouseListener(new MyMouseAdapter());
         this.addMouseMotionListener(new MyMouseMotionAdapter());
 
         for (int i = 0; i <= rowSize; i++) {
             for (int j = 0; j <= colSize; j++) {
-                board[i][j] = drawingBoard[i][j] = 0xffffff;
+                tempBoard[i][j] = board[i][j] = 0xffffff;
             }
         }
 
@@ -45,43 +43,69 @@ public class DrawCanvas extends Canvas implements Runnable {
 
     public void clearDraw(List<Point2D> point2DS) {
         for (Point2D p : point2DS) {
-            p.setColor(board[p.getComputerX()][p.getComputerY()]);
-            drawingBoard[p.getComputerX()][p.getComputerY()] = board[p.getComputerX()][p.getComputerY()];
-            putPixel(p);
+            if (p.getColor() != board[p.getComputerX()][p.getComputerY()]) {
+                p.setColor(board[p.getComputerX()][p.getComputerY()]);
+                tempBoard[p.getComputerX()][p.getComputerY()] = board[p.getComputerX()][p.getComputerY()];
+                putPixel(p);
+            }
         }
     }
 
     public void applyDraw(List<Point2D> point2DList) {
         for (Point2D p : point2DList) {
-            drawingBoard[p.getComputerX()][p.getComputerY()] = p.getColor();
-            putPixel(p);
+            if (p.getColor() != board[p.getComputerX()][p.getComputerY()]) {
+                tempBoard[p.getComputerX()][p.getComputerY()] = p.getColor();
+                putPixel(p);
+            }
         }
     }
 
     public void merge() {
         for (int i = 0; i <= rowSize; i++) {
             for (int j = 0; j <= colSize; j++) {
-                if (board[i][j] != drawingBoard[i][j]) {
-                    board[i][j] = drawingBoard[i][j];
-                    drawingBoard[i][j] = 0xffffff;
+                if (board[i][j] != tempBoard[i][j]) {
+                    board[i][j] = tempBoard[i][j];
                 }
             }
         }
     }
 
+    private void drawAxis(){
+        Graphics g = getGraphics();
+        g.setColor(new Color(0xCE503F));
+        g.fillRect(rowSize/2*5+1, 0, 4, canvasHeight);
+        g.fillRect(0, colSize/2*5+1, canvasWidth, 5);
+    }
+
+    private void drawGrid(){
+        Graphics g = getGraphics();
+        g.setColor(new Color(0xFFD9C7C7));
+        for (int i = 0; i <= rowSize; i++) {
+            g.drawLine(i * 5, 0, i * 5, canvasHeight);
+        }
+        for (int i=0; i<=colSize; i++){
+            g.drawLine(0, i*5, canvasWidth, i*5);
+        }
+        g.dispose();
+    }
 
     public void paint(Graphics g) {
         super.paint(g);
 
-        line = new Line(null, null, this);
+//        drawAxis();
+        drawGrid();
+
+        line = new Line(this);
+        rectangle = new Rectangle(this);
+
 
     }
 
 
-    public void putPixel(Point2D point) {
+    private void putPixel(Point2D point) {
         Graphics g = DrawCanvas.this.getGraphics();
         g.setColor(new Color(point.getColor()));
-        g.fillRect(point.getComputerX() * pixelSize, point.getComputerY() * pixelSize, pixelSize, pixelSize);
+        g.fillRect(point.getComputerX() * pixelSize+1, point.getComputerY() * pixelSize+1, pixelSize-1, pixelSize-1);
         g.dispose();
     }
 
@@ -117,17 +141,18 @@ public class DrawCanvas extends Canvas implements Runnable {
     }
 
 
-    @Override
-    public void run() {
-        while (true) {
-//            if (isDrawing) redraw();
-            try {
-                Thread.sleep(10);
-            } catch (Exception e) {
+    public void clearScreen() {
+        Graphics g = getGraphics();
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, canvasWidth, canvasHeight);
 
+        for (int i = 0; i <= rowSize; i++) {
+            for (int j = 0; j <= colSize; j++) {
+                tempBoard[i][j] = board[i][j] = 0xffffff;
             }
         }
 
+        drawGrid();
     }
 
     public class MyMouseAdapter extends MouseAdapter {
@@ -141,9 +166,10 @@ public class DrawCanvas extends Canvas implements Runnable {
             super.mouseReleased(e);
             merge();
 
-            line.setStartPoint(null);
-            line.setEndPoint(null);
-            isDrawing = false;
+            rectangle.setStartPoint(null);
+            rectangle.setEndPoint(null);
+//            line.setStartPoint(null);
+//            line.setEndPoint(null);
         }
     }
 
@@ -151,14 +177,16 @@ public class DrawCanvas extends Canvas implements Runnable {
         @Override
         public void mouseDragged(MouseEvent e) {
             super.mouseDragged(e);
-            isDrawing = true;
 
             if (e.getX() > canvasWidth || e.getY() > canvasHeight || e.getX() < 0 || e.getY() < 0) return;
 
-            if (line.getStartPoint() == null) {
-                line.setStartPoint(Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize));
+
+            if (rectangle.getStartPoint() == null) {
+//                line.setStartPoint(Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize));
+                rectangle.setStartPoint(Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize));
             } else {
-                line.setEndPoint(Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize));
+//                line.setEndPoint(Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize));
+                rectangle.setEndPoint(Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize));
             }
 
         }
@@ -167,12 +195,8 @@ public class DrawCanvas extends Canvas implements Runnable {
         public void mouseMoved(MouseEvent e) {
             super.mouseMoved(e);
 
-            //dadsad
-
-            //sdada
         }
     }
-
 
 
 }
