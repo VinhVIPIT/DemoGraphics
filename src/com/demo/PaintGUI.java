@@ -1,8 +1,6 @@
 package com.demo;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
 
 /**
  * Create by VinhIT
@@ -25,10 +23,9 @@ public class PaintGUI extends JFrame {
     private JButton button11;
     private JButton button12;
     private JPanel mainPanel;
+    private JLabel labelDrawMode;
 
     private DrawCanvas canvas;
-
-
 
 
     public PaintGUI() {
@@ -40,17 +37,20 @@ public class PaintGUI extends JFrame {
         canvas = new DrawCanvas();
         mainPanel.add(canvas);
 
-        btnClear.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                canvas.clearScreen();
-            }
+        btnClear.addActionListener(e -> canvas.clearScreen());
+
+        btnLine.addActionListener(e -> {
+            canvas.drawMode = DrawMode.LINE;
+            labelDrawMode.setText("MODE: LINE");
+        });
+        btnRect.addActionListener(e -> {
+            canvas.drawMode = DrawMode.RECTANGLE;
+            labelDrawMode.setText("MODE: RECT");
         });
 
         add(rootPanel);
 
     }
-
 
 
 }

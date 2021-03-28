@@ -166,10 +166,17 @@ public class DrawCanvas extends Canvas {
             super.mouseReleased(e);
             merge();
 
-            rectangle.setStartPoint(null);
-            rectangle.setEndPoint(null);
-//            line.setStartPoint(null);
-//            line.setEndPoint(null);
+            switch (drawMode){
+                case LINE -> {
+                    line.setStartPoint(null);
+                    line.setEndPoint(null);
+                }
+                case RECTANGLE -> {
+                    rectangle.setStartPoint(null);
+                    rectangle.setEndPoint(null);
+                }
+            }
+
         }
     }
 
@@ -180,14 +187,24 @@ public class DrawCanvas extends Canvas {
 
             if (e.getX() > canvasWidth || e.getY() > canvasHeight || e.getX() < 0 || e.getY() < 0) return;
 
-
-            if (rectangle.getStartPoint() == null) {
-//                line.setStartPoint(Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize));
-                rectangle.setStartPoint(Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize));
-            } else {
-//                line.setEndPoint(Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize));
-                rectangle.setEndPoint(Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize));
+            switch (drawMode){
+                case LINE -> {
+                    if (line.getStartPoint() == null) {
+                        line.setStartPoint(Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize));
+                    } else {
+                        line.setEndPoint(Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize));
+                    }
+                }
+                case RECTANGLE -> {
+                    if (rectangle.getStartPoint() == null) {
+                        rectangle.setStartPoint(Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize));
+                    } else {
+                        rectangle.setEndPoint(Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize));
+                    }
+                }
             }
+
+
 
         }
 
