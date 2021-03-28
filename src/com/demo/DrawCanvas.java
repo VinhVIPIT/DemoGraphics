@@ -20,10 +20,21 @@ public class DrawCanvas extends Canvas {
     private int[][] board = new int[rowSize + 1][colSize + 1];
     private int[][] tempBoard = new int[rowSize + 1][colSize + 1];
 
-    public DrawMode drawMode = DrawMode.LINE;
+    private DrawMode drawMode;
 
-    Line line;
-    Rectangle rectangle;
+    public void setDrawMode(DrawMode drawMode) {
+        this.drawMode = drawMode;
+        switch (drawMode) {
+            case LINE -> {
+                geometry = new Line(this);
+            }
+            case RECTANGLE -> {
+                geometry = new Rectangle(this);
+            }
+        }
+    }
+
+    Geometry geometry;
 
 
     public DrawCanvas() {
@@ -38,6 +49,8 @@ public class DrawCanvas extends Canvas {
                 tempBoard[i][j] = board[i][j] = 0xffffff;
             }
         }
+
+        setDrawMode(DrawMode.LINE);
 
     }
 
@@ -70,21 +83,21 @@ public class DrawCanvas extends Canvas {
         }
     }
 
-    private void drawAxis(){
+    private void drawAxis() {
         Graphics g = getGraphics();
         g.setColor(new Color(0xCE503F));
-        g.fillRect(rowSize/2*5+1, 0, 4, canvasHeight);
-        g.fillRect(0, colSize/2*5+1, canvasWidth, 5);
+        g.fillRect(rowSize / 2 * 5 + 1, 0, 4, canvasHeight);
+        g.fillRect(0, colSize / 2 * 5 + 1, canvasWidth, 5);
     }
 
-    private void drawGrid(){
+    private void drawGrid() {
         Graphics g = getGraphics();
         g.setColor(new Color(0xFFD9C7C7));
         for (int i = 0; i <= rowSize; i++) {
             g.drawLine(i * 5, 0, i * 5, canvasHeight);
         }
-        for (int i=0; i<=colSize; i++){
-            g.drawLine(0, i*5, canvasWidth, i*5);
+        for (int i = 0; i <= colSize; i++) {
+            g.drawLine(0, i * 5, canvasWidth, i * 5);
         }
         g.dispose();
     }
@@ -95,9 +108,6 @@ public class DrawCanvas extends Canvas {
 //        drawAxis();
         drawGrid();
 
-        line = new Line(this);
-        rectangle = new Rectangle(this);
-
 
     }
 
@@ -105,7 +115,7 @@ public class DrawCanvas extends Canvas {
     private void putPixel(Point2D point) {
         Graphics g = DrawCanvas.this.getGraphics();
         g.setColor(new Color(point.getColor()));
-        g.fillRect(point.getComputerX() * pixelSize+1, point.getComputerY() * pixelSize+1, pixelSize-1, pixelSize-1);
+        g.fillRect(point.getComputerX() * pixelSize + 1, point.getComputerY() * pixelSize + 1, pixelSize - 1, pixelSize - 1);
         g.dispose();
     }
 
@@ -165,17 +175,8 @@ public class DrawCanvas extends Canvas {
         public void mouseReleased(MouseEvent e) {
             super.mouseReleased(e);
             merge();
-
-            switch (drawMode){
-                case LINE -> {
-                    line.setStartPoint(null);
-                    line.setEndPoint(null);
-                }
-                case RECTANGLE -> {
-                    rectangle.setStartPoint(null);
-                    rectangle.setEndPoint(null);
-                }
-            }
+            geometry.setStartPoint(null);
+            geometry.setEndPoint(null);
 
         }
     }
@@ -187,24 +188,11 @@ public class DrawCanvas extends Canvas {
 
             if (e.getX() > canvasWidth || e.getY() > canvasHeight || e.getX() < 0 || e.getY() < 0) return;
 
-            switch (drawMode){
-                case LINE -> {
-                    if (line.getStartPoint() == null) {
-                        line.setStartPoint(Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize));
-                    } else {
-                        line.setEndPoint(Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize));
-                    }
-                }
-                case RECTANGLE -> {
-                    if (rectangle.getStartPoint() == null) {
-                        rectangle.setStartPoint(Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize));
-                    } else {
-                        rectangle.setEndPoint(Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize));
-                    }
-                }
+            if (geometry.getStartPoint() == null) {
+                geometry.setStartPoint(Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize));
+            } else {
+                geometry.setEndPoint(Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize));
             }
-
-
 
         }
 

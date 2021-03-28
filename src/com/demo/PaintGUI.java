@@ -40,11 +40,11 @@ public class PaintGUI extends JFrame {
         btnClear.addActionListener(e -> canvas.clearScreen());
 
         btnLine.addActionListener(e -> {
-            canvas.drawMode = DrawMode.LINE;
+            canvas.setDrawMode(DrawMode.LINE);
             labelDrawMode.setText("MODE: LINE");
         });
         btnRect.addActionListener(e -> {
-            canvas.drawMode = DrawMode.RECTANGLE;
+            canvas.setDrawMode(DrawMode.RECTANGLE);
             labelDrawMode.setText("MODE: RECT");
         });
 
