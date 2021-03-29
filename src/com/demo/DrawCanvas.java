@@ -15,36 +15,30 @@ public class DrawCanvas extends Canvas {
 
     public static final int canvasWidth = 1005, canvasHeight = 605;
     public static final int rowSize = canvasWidth / 5, colSize = canvasHeight / 5;
-    public static final int pixelSize = 5;
 
-    public static int currentColor = 0xff0000;
+    public static final int pixelSize = 5;  // Kích thước 1 đơn vị
 
-    private int[][] board = new int[rowSize][colSize];
-    private int[][] tempBoard = new int[rowSize][colSize];
+    public static int currentColor = 0xff0000;  // Màu vẽ đang chọn hiện tại
 
-    private DrawMode drawMode;
-    private MouseCoordinateChangeListener mouseListener;
+    private int[][] board = new int[rowSize][colSize];      // Bảng màu canvas chính
+    private int[][] tempBoard = new int[rowSize][colSize];  // Bảng màu phụ cho việc preview hình, sau khi `merge()` thì board và tempBoard sẽ hợp lại thành 1
+
+    private DrawMode drawMode; // Chế độ hình vẽ
+
+    private MouseCoordinateChangeListener mouseListener; // Sự kiện cập nhập tọa độ con chuột
+
+    private Geometry geometry;  // Hình vẽ
 
 
-    public void setDrawMode(DrawMode drawMode) {
-        this.drawMode = drawMode;
-        switch (drawMode) {
-            case LINE -> {
-                geometry = new Line(this);
-            }
-            case RECTANGLE -> {
-                geometry = new Rectangle(this);
-            }
-        }
-    }
-
-    Geometry geometry;
+    //------------------------------------------------------------------------//
 
 
     public DrawCanvas(MouseCoordinateChangeListener mouseListener) {
         this.mouseListener = mouseListener;
 
         setPreferredSize(new Dimension(canvasWidth, canvasHeight));
+
+        // mặc định nền màu trắng
         setBackground(new Color(0xFFFFFF));
 
         this.addMouseListener(new MyMouseAdapter());
@@ -56,10 +50,35 @@ public class DrawCanvas extends Canvas {
             }
         }
 
-        setDrawMode(DrawMode.LINE);
+        // Mode mặc định là vẽ PEN
+        setDrawMode(DrawMode.PEN);
 
     }
 
+
+    /*
+    Cài đặt hình muốn vẽ
+     */
+    public void setDrawMode(DrawMode drawMode) {
+        this.drawMode = drawMode;
+        switch (drawMode) {
+            case PEN -> {
+                geometry = new Pen(this);
+            }
+            case LINE -> {
+                geometry = new Line(this);
+            }
+            case RECTANGLE -> {
+                geometry = new Rectangle(this);
+            }
+        }
+    }
+
+
+    /*
+     * Xóa những điểm đã cũ mà không thuộc hình vẽ preview
+     * Bằng cách lấy màu nền vẽ đè lên
+     */
     public void clearDraw(List<Point2D> point2DS) {
         for (Point2D p : point2DS) {
             if (p.getColor() != board[p.getComputerX()][p.getComputerY()]) {
@@ -70,7 +89,12 @@ public class DrawCanvas extends Canvas {
         }
     }
 
+    /*
+     * Vẽ bản preview của hình
+     */
     public void applyDraw(List<Point2D> point2DList) {
+//        System.out.println("aaa: "+point2DList.size());
+
         for (Point2D p : point2DList) {
             if (p.getColor() != board[p.getComputerX()][p.getComputerY()]) {
                 tempBoard[p.getComputerX()][p.getComputerY()] = p.getColor();
@@ -79,6 +103,9 @@ public class DrawCanvas extends Canvas {
         }
     }
 
+    /*
+     * Hợp nhất nét vẽ preview của hình lên canvas
+     */
     public void merge() {
         for (int i = 0; i < rowSize; i++) {
             for (int j = 0; j < colSize; j++) {
@@ -89,31 +116,39 @@ public class DrawCanvas extends Canvas {
         }
     }
 
+    /*
+     * Vẽ trục tọa độ
+     */
     private void drawAxis() {
+        // TODO: Cần fix
+
         Graphics g = getGraphics();
         g.setColor(new Color(0xCE503F));
         g.fillRect(rowSize / 2 * 5 + 1, 0, 4, canvasHeight);
         g.fillRect(0, colSize / 2 * 5 + 1, canvasWidth, 5);
     }
 
+    /*
+     * Vẽ lưới hệ tọa độ
+     */
     private void drawGrid() {
         Graphics g = getGraphics();
         g.setColor(new Color(0xFFD9C7C7));
         for (int i = 0; i <= rowSize; i++) {
-            g.drawLine(i * 5, 0, i * 5, canvasHeight);
+            g.drawLine(i * pixelSize, 0, i * pixelSize, canvasHeight);
         }
         for (int i = 0; i <= colSize; i++) {
-            g.drawLine(0, i * 5, canvasWidth, i * 5);
+            g.drawLine(0, i * pixelSize, canvasWidth, i * pixelSize);
         }
         g.dispose();
     }
 
+    @Override
     public void paint(Graphics g) {
         super.paint(g);
 
 //        drawAxis();
-        drawGrid();
-
+        drawGrid(); // Vẽ ô lưới
 
     }
 
@@ -121,7 +156,10 @@ public class DrawCanvas extends Canvas {
     private void putPixel(Point2D point) {
         Graphics g = DrawCanvas.this.getGraphics();
         g.setColor(new Color(point.getColor()));
+
+        // Công thức chỉ áp dụng khi vẽ ô lưới
         g.fillRect(point.getComputerX() * pixelSize + 1, point.getComputerY() * pixelSize + 1, pixelSize - 1, pixelSize - 1);
+
         g.dispose();
     }
 
@@ -157,10 +195,15 @@ public class DrawCanvas extends Canvas {
     }
 
 
+    /*
+     * Xóa toàn bộ màn hình, mặc định màn hình sẽ quay về màu trắng
+     */
     public void clearScreen() {
+        geometry.clearAll();
+
         Graphics g = getGraphics();
         g.setColor(Color.WHITE);
-        g.fillRect(0, 0, canvasWidth, canvasHeight);
+        g.fillRect(0, 0, canvasWidth, canvasHeight);    // vẽ như này cho nhanh
 
         for (int i = 0; i < rowSize; i++) {
             for (int j = 0; j < colSize; j++) {
@@ -168,61 +211,76 @@ public class DrawCanvas extends Canvas {
             }
         }
 
-        drawGrid();
+        drawGrid(); // Xóa xong thì vẽ lại lưới tọa độ
     }
 
+    // Lớp cài đặt sự kiện nhấn chuột
     public class MyMouseAdapter extends MouseAdapter {
+
         @Override
         public void mouseClicked(MouseEvent e) {
             super.mouseClicked(e);
+
+            // Lấy tọa độ con trỏ chuột trên màn hình, chuyển sang tọa độ Descartes
+            Point2D point = Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize);
+            // Set màu cho điểm vẽ là màu đang chọn
+            point.setColor(DrawCanvas.currentColor);
+            geometry.setStartPoint(point);
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
+            // Hàm này được gọi khi chuột được nhả ra
+
             super.mouseReleased(e);
 
-            if (drawMode == DrawMode.PEN) {
+            // Hợp nhất hình vừa vẽ lên canvas
+            merge();
 
-            } else {
-                merge();
-                geometry.setStartPoint(null);
-                geometry.setEndPoint(null);
-            }
+            // Reset các thuộc tính của Hình vẽ
+            geometry.clearAll();
 
         }
     }
 
+
+    // Lớp cài đặt sự kiện di chuột
     public class MyMouseMotionAdapter extends MouseMotionAdapter {
+
+
         @Override
         public void mouseDragged(MouseEvent e) {
+            // Nhấn giữ chuột và kéo
+
             super.mouseDragged(e);
-
-
             if (e.getX() >= canvasWidth || e.getY() >= canvasHeight || e.getX() <= 0 || e.getY() <= 0) return;
 
+            // Lấy tọa độ con trỏ chuột trên màn hình, chuyển sang tọa độ Descartes
             Point2D point = Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize);
-            point.setColor(0xff0000);
+            // Set màu cho điểm vẽ là màu đang chọn
+            point.setColor(DrawCanvas.currentColor);
 
-            if (drawMode == DrawMode.PEN) {
-                board[point.getComputerX()][point.getComputerY()] = point.getColor();
-                putPixel(point);
+            if (geometry.getStartPoint() == null) {
+                geometry.setStartPoint(point);
             } else {
-                if (geometry.getStartPoint() == null) {
-                    geometry.setStartPoint(point);
-                } else {
-                    geometry.setEndPoint(point);
-                    geometry.setupDraw();
-                }
+                geometry.setEndPoint(point);
+                geometry.setupDraw(); // Xem trước nét vẽ
             }
 
         }
 
+
         @Override
         public void mouseMoved(MouseEvent e) {
+            // Chuột di chuyển bình thưởng, KHÔNG nhấn giữ
+
             super.mouseMoved(e);
+
+            // Sử dụng kĩ thuật Callback, cập nhật tọa độ hiển thị lên JLable ở góc dưới màn hình
             Point2D point = Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize);
             mouseListener.mouseCoordinate(point.getX(), point.getY());
         }
+
     }
 
 

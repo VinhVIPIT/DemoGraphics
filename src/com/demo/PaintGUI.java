@@ -8,7 +8,7 @@ import java.awt.*;
  * On 19/03/2021
  */
 
-public class PaintGUI extends JFrame implements MouseCoordinateChangeListener{
+public class PaintGUI extends JFrame implements MouseCoordinateChangeListener {
 
     private JPanel rootPanel;
     private JButton btnPen;
@@ -49,24 +49,29 @@ public class PaintGUI extends JFrame implements MouseCoordinateChangeListener{
             canvas.setDrawMode(DrawMode.RECTANGLE);
             labelDrawMode.setText("MODE: RECT");
         });
-        btnPen.addActionListener(e->{
+        btnPen.addActionListener(e -> {
             canvas.setDrawMode(DrawMode.PEN);
             labelDrawMode.setText("MODE: PEN");
         });
 
-        btnChooseColor.addActionListener(e->{
+        // Chọn màu vẽ
+        btnChooseColor.addActionListener(e -> {
             Color color = JColorChooser.showDialog(null, "Choose Color", btnChooseColor.getBackground());
-            btnChooseColor.setBackground(color);
-            DrawCanvas.currentColor = color.getRGB();
+            if (color != null) {
+                btnChooseColor.setBackground(color);
+                DrawCanvas.currentColor = color.getRGB();
+            }
+
         });
 
         add(rootPanel);
+
 
     }
 
 
     @Override
     public void mouseCoordinate(int x, int y) {
-        labelCoordinate.setText(String.format("X:%d , Y:%d", x,y));
+        labelCoordinate.setText(String.format("X:%d , Y:%d", x, y));
     }
 }

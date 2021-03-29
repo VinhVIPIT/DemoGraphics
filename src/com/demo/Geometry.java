@@ -26,26 +26,36 @@ public abstract class Geometry {
 
     public abstract void setupDraw();
 
-    protected final void clearOldPoints(){
+    /*
+     * Lọc ra những điểm cần xóa và xóa nó
+     */
+    protected final void clearOldPoints() {
         List<Point2D> list = new ArrayList<>();
 
-        for(Point2D pc:listClear){
+        for (Point2D pc : listClear) {
             boolean del = true;
-            for(Point2D pd: listDraw){
-                if(pc.isSamePoint(pd)) {
-                    del = false; break;
+            for (Point2D pd : listDraw) {
+                if (pc.isSamePoint(pd)) {
+                    del = false;
+                    break;
                 }
             }
-            if(del) list.add(pc);
+            if (del) list.add(pc);
         }
         canvas.clearDraw(list);
     }
 
-    protected final void drawNewPoints(){
+    /*
+     * Vẽ những điểm mới
+     */
+    protected final void drawNewPoints() {
         canvas.applyDraw(listDraw);
     }
 
-    protected void swapList(){
+    /*
+     * Đổ listDraw cho listClear
+     */
+    protected void swapList() {
         listClear.clear();
         listClear.addAll(listDraw);
         listDraw.clear();
@@ -65,5 +75,14 @@ public abstract class Geometry {
 
     public Point2D getEndPoint() {
         return endPoint;
+    }
+
+    /*
+     * Xóa toàn bộ dữ liệu
+     */
+    protected void clearAll() {
+        listDraw.clear();
+        listClear.clear();
+        startPoint = endPoint = null;
     }
 }

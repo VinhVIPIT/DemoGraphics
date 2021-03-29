@@ -7,6 +7,7 @@ package com.demo;
 
 public class Rectangle extends Geometry {
 
+    // Khai báo 4 đoạn thẳng của hình chữ nhật
     private Line[] lines = new Line[4];
 
     public Rectangle(DrawCanvas canvas, Point2D startPoint2D, Point2D endPoint2D) {
@@ -19,6 +20,9 @@ public class Rectangle extends Geometry {
         init4Lines(canvas);
     }
 
+    /*
+     * Khởi tạo 1 đường thẳng
+     */
     private void init4Lines(DrawCanvas canvas) {
         for (int i = 0; i < lines.length; i++)
             lines[i] = new Line(canvas);
@@ -33,6 +37,9 @@ public class Rectangle extends Geometry {
 //
 //            clearOldPoints();
 //            drawNewPoints();
+
+
+            // Sử dụng 4 đoạn thẳng thì chạy lâu hơn
 
             Point2D pointB = new Point2D(endPoint.getX(), startPoint.getY());
             Point2D pointD = new Point2D(startPoint.getX(), endPoint.getY());
@@ -50,6 +57,7 @@ public class Rectangle extends Geometry {
             lines[3].setEndPoint(startPoint);
 
             for(int i=0; i<4; i++){
+                lines[i].swapList();
                 lines[i].drawLine();
                 lines[i].clearOldPoints();
             }
@@ -58,7 +66,6 @@ public class Rectangle extends Geometry {
 
         }
     }
-/*
 
     private void drawRectangle(int x1, int y1, int x2, int y2) {
         int xUnit = 1, yUnit = 1;
@@ -85,13 +92,6 @@ public class Rectangle extends Geometry {
             listDraw.add(pt);
             y += yUnit;
         }
-    }
-*/
-
-    @Override
-    public void setEndPoint(Point2D endPoint) {
-        this.endPoint = endPoint;
-//        setupDraw();
     }
 
 }

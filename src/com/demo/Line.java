@@ -20,21 +20,26 @@ public class Line extends Geometry {
     @Override
     public void setupDraw() {
         if(startPoint != null && endPoint != null) {
+            // Đổ listDraw cho listClear
             swapList();
 
-            lineBresenham(startPoint.getX(), startPoint.getY(), endPoint.getX(), endPoint.getY());
+            // Xác định những điểm thuộc đường thẳng MỚI cần vẽ
+            // Những điểm cần vẽ sẽ được thêm vào listDraw
+            drawLine();
 
+            // Xóa những điểm thuộc listClear
             clearOldPoints();
+
+            // Vẽ những điểm thuộc listDraw
             drawNewPoints();
         }
     }
 
     public void drawLine(){
-        swapList();
         lineBresenham(startPoint.getX(), startPoint.getY(), endPoint.getX(), endPoint.getY());
     }
 
-    public void lineBresenham(int x1, int y1, int x2, int y2) {
+    private void lineBresenham(int x1, int y1, int x2, int y2) {
         int x, y, Dx, Dy, p;
         Dx = Math.abs(x2 - x1);
         Dy = Math.abs(y2 - y1);
@@ -93,9 +98,4 @@ public class Line extends Geometry {
 
     }
 
-    @Override
-    public void setEndPoint(Point2D endPoint) {
-        super.setEndPoint(endPoint);
-//        setupDraw();
-    }
 }

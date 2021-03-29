@@ -7,15 +7,16 @@ package com.demo;
 
 public class Point2D {
 
+    // Tọa độ Descartes của điểm
     private int x, y;
 
+    // Màu vẽ của điểm
     private int color;
 
 
     public Point2D(int x, int y) {
         this.x = x;
         this.y = y;
-        this.color = 0xffffff;
     }
 
     public Point2D(int x, int y, int color) {
@@ -27,7 +28,6 @@ public class Point2D {
     public int getX() {
         return x;
     }
-
 
     public void setX(int x) {
         this.x = x;
@@ -53,6 +53,11 @@ public class Point2D {
         return new Point2D(x + DrawCanvas.rowSize / 2, DrawCanvas.colSize / 2 - y);
     }
 
+
+    /*
+     * xm, ym là tọa độ trên màn hình máy tính
+     * Ta cần chuyển nó về hệ tọa độ Descartes để sử dụng
+     */
     public static Point2D fromComputerCoordinate(int xm, int ym) {
         return new Point2D(-DrawCanvas.rowSize / 2 + xm, DrawCanvas.colSize / 2 - ym);
     }
@@ -66,6 +71,9 @@ public class Point2D {
     }
 
 
+    /*
+     * Kiểm tra 2 điểm có giống nhau hay không
+     */
     public boolean isSamePoint(Point2D point) {
         return x == point.x && y == point.y && color == point.color;
     }
