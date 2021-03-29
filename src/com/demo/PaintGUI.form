@@ -16,12 +16,14 @@
           <text value="Pen"/>
         </properties>
       </component>
-      <component id="a546e" class="javax.swing.JButton" binding="button2" default-binding="true">
+      <component id="a546e" class="javax.swing.JButton" binding="btnChooseColor">
         <constraints>
           <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Button"/>
+          <background color="-65536"/>
+          <foreground color="-65536"/>
+          <text value=""/>
         </properties>
       </component>
       <component id="27051" class="javax.swing.JButton" binding="btnLine">
@@ -173,6 +175,14 @@
         </constraints>
         <properties>
           <text value="MODE: LINE"/>
+        </properties>
+      </component>
+      <component id="77d60" class="javax.swing.JLabel" binding="labelCoordinate">
+        <constraints>
+          <grid row="10" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="X: -1, Y: -1"/>
         </properties>
       </component>
     </children>

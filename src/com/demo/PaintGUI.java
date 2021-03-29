@@ -1,17 +1,18 @@
 package com.demo;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Create by VinhIT
  * On 19/03/2021
  */
 
-public class PaintGUI extends JFrame {
+public class PaintGUI extends JFrame implements MouseCoordinateChangeListener{
 
     private JPanel rootPanel;
     private JButton btnPen;
-    private JButton button2;
+    private JButton btnChooseColor;
     private JButton btnLine;
     private JButton btnClear;
     private JButton btnRect;
@@ -24,6 +25,7 @@ public class PaintGUI extends JFrame {
     private JButton button12;
     private JPanel mainPanel;
     private JLabel labelDrawMode;
+    private JLabel labelCoordinate;
 
     private DrawCanvas canvas;
 
@@ -34,7 +36,7 @@ public class PaintGUI extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
 
-        canvas = new DrawCanvas();
+        canvas = new DrawCanvas(this);
         mainPanel.add(canvas);
 
         btnClear.addActionListener(e -> canvas.clearScreen());
@@ -47,10 +49,24 @@ public class PaintGUI extends JFrame {
             canvas.setDrawMode(DrawMode.RECTANGLE);
             labelDrawMode.setText("MODE: RECT");
         });
+        btnPen.addActionListener(e->{
+            canvas.setDrawMode(DrawMode.PEN);
+            labelDrawMode.setText("MODE: PEN");
+        });
+
+        btnChooseColor.addActionListener(e->{
+            Color color = JColorChooser.showDialog(null, "Choose Color", btnChooseColor.getBackground());
+            btnChooseColor.setBackground(color);
+            DrawCanvas.currentColor = color.getRGB();
+        });
 
         add(rootPanel);
 
     }
 
 
+    @Override
+    public void mouseCoordinate(int x, int y) {
+        labelCoordinate.setText(String.format("X:%d , Y:%d", x,y));
+    }
 }

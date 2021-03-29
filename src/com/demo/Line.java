@@ -29,6 +29,11 @@ public class Line extends Geometry {
         }
     }
 
+    public void drawLine(){
+        swapList();
+        lineBresenham(startPoint.getX(), startPoint.getY(), endPoint.getX(), endPoint.getY());
+    }
+
     public void lineBresenham(int x1, int y1, int x2, int y2) {
         int x, y, Dx, Dy, p;
         Dx = Math.abs(x2 - x1);
@@ -43,7 +48,7 @@ public class Line extends Geometry {
         if (y2 - y1 < 0)
             yUnit = -yUnit;
 
-        Point2D pt = new Point2D(x, y, 0xff0000);
+        Point2D pt = new Point2D(x, y, DrawCanvas.currentColor);
         listDraw.add(pt);
 
         int cnt = 1;
@@ -60,7 +65,7 @@ public class Line extends Geometry {
                 x += xUnit;
 
 //                if(cnt%4 < 3){
-                    pt = new Point2D(x, y, 0xff0000);
+                    pt = new Point2D(x, y, DrawCanvas.currentColor);
                     listDraw.add(pt);
 //                }
                 cnt++;
@@ -78,7 +83,7 @@ public class Line extends Geometry {
                 y += yUnit;
 
 //                if(cnt%4 < 3){
-                    pt = new Point2D(x, y, 0xff0000);
+                    pt = new Point2D(x, y, DrawCanvas.currentColor);
                     listDraw.add(pt);
 //                }
                 cnt++;
@@ -91,6 +96,6 @@ public class Line extends Geometry {
     @Override
     public void setEndPoint(Point2D endPoint) {
         super.setEndPoint(endPoint);
-        setupDraw();
+//        setupDraw();
     }
 }

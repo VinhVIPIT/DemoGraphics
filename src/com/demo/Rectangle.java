@@ -7,26 +7,58 @@ package com.demo;
 
 public class Rectangle extends Geometry {
 
+    private Line[] lines = new Line[4];
+
     public Rectangle(DrawCanvas canvas, Point2D startPoint2D, Point2D endPoint2D) {
         super(canvas, startPoint2D, endPoint2D);
+        init4Lines(canvas);
     }
 
     public Rectangle(DrawCanvas canvas) {
         super(canvas);
+        init4Lines(canvas);
+    }
+
+    private void init4Lines(DrawCanvas canvas) {
+        for (int i = 0; i < lines.length; i++)
+            lines[i] = new Line(canvas);
     }
 
     @Override
     public void setupDraw() {
         if (startPoint != null && endPoint != null) {
-            swapList();
+//            swapList();
+//
+//            drawRectangle(startPoint.getX(), startPoint.getY(), endPoint.getX(), endPoint.getY());
+//
+//            clearOldPoints();
+//            drawNewPoints();
 
-            drawRectangle(startPoint.getX(), startPoint.getY(), endPoint.getX(), endPoint.getY());
+            Point2D pointB = new Point2D(endPoint.getX(), startPoint.getY());
+            Point2D pointD = new Point2D(startPoint.getX(), endPoint.getY());
 
-            clearOldPoints();
-            drawNewPoints();
+            lines[0].setStartPoint(startPoint);
+            lines[0].setEndPoint(pointB);
+
+            lines[1].setStartPoint(pointB);
+            lines[1].setEndPoint(endPoint);
+
+            lines[2].setStartPoint(endPoint);
+            lines[2].setEndPoint(pointD);
+
+            lines[3].setStartPoint(pointD);
+            lines[3].setEndPoint(startPoint);
+
+            for(int i=0; i<4; i++){
+                lines[i].drawLine();
+                lines[i].clearOldPoints();
+            }
+
+            for (int i=0; i<4; i++) lines[i].drawNewPoints();
 
         }
     }
+/*
 
     private void drawRectangle(int x1, int y1, int x2, int y2) {
         int xUnit = 1, yUnit = 1;
@@ -36,29 +68,30 @@ public class Rectangle extends Geometry {
         int x = x1, y = y1;
         Point2D pt;
 
-        pt = new Point2D(x2, y2, 0xff0000);
+        pt = new Point2D(x2, y2, DrawCanvas.currentColor);
         listDraw.add(pt);
 
         while (x != x2) {
-            pt = new Point2D(x, y1, 0xff0000);
+            pt = new Point2D(x, y1, DrawCanvas.currentColor);
             listDraw.add(pt);
-            pt = new Point2D(x, y2, 0xff0000);
+            pt = new Point2D(x, y2, DrawCanvas.currentColor);
             listDraw.add(pt);
             x += xUnit;
         }
         while (y != y2) {
-            pt = new Point2D(x1, y, 0xff0000);
+            pt = new Point2D(x1, y, DrawCanvas.currentColor);
             listDraw.add(pt);
-            pt = new Point2D(x2, y, 0xff0000);
+            pt = new Point2D(x2, y, DrawCanvas.currentColor);
             listDraw.add(pt);
             y += yUnit;
         }
     }
+*/
 
     @Override
     public void setEndPoint(Point2D endPoint) {
         this.endPoint = endPoint;
-        setupDraw();
+//        setupDraw();
     }
 
 }

@@ -13,14 +13,18 @@ import java.util.List;
 
 public class DrawCanvas extends Canvas {
 
-    public static final int canvasWidth = 1000, canvasHeight = 600;
+    public static final int canvasWidth = 1005, canvasHeight = 605;
     public static final int rowSize = canvasWidth / 5, colSize = canvasHeight / 5;
     public static final int pixelSize = 5;
 
-    private int[][] board = new int[rowSize + 1][colSize + 1];
-    private int[][] tempBoard = new int[rowSize + 1][colSize + 1];
+    public static int currentColor = 0xff0000;
+
+    private int[][] board = new int[rowSize][colSize];
+    private int[][] tempBoard = new int[rowSize][colSize];
 
     private DrawMode drawMode;
+    private MouseCoordinateChangeListener mouseListener;
+
 
     public void setDrawMode(DrawMode drawMode) {
         this.drawMode = drawMode;
@@ -37,15 +41,17 @@ public class DrawCanvas extends Canvas {
     Geometry geometry;
 
 
-    public DrawCanvas() {
+    public DrawCanvas(MouseCoordinateChangeListener mouseListener) {
+        this.mouseListener = mouseListener;
+
         setPreferredSize(new Dimension(canvasWidth, canvasHeight));
         setBackground(new Color(0xFFFFFF));
 
         this.addMouseListener(new MyMouseAdapter());
         this.addMouseMotionListener(new MyMouseMotionAdapter());
 
-        for (int i = 0; i <= rowSize; i++) {
-            for (int j = 0; j <= colSize; j++) {
+        for (int i = 0; i < rowSize; i++) {
+            for (int j = 0; j < colSize; j++) {
                 tempBoard[i][j] = board[i][j] = 0xffffff;
             }
         }
@@ -74,8 +80,8 @@ public class DrawCanvas extends Canvas {
     }
 
     public void merge() {
-        for (int i = 0; i <= rowSize; i++) {
-            for (int j = 0; j <= colSize; j++) {
+        for (int i = 0; i < rowSize; i++) {
+            for (int j = 0; j < colSize; j++) {
                 if (board[i][j] != tempBoard[i][j]) {
                     board[i][j] = tempBoard[i][j];
                 }
@@ -156,8 +162,8 @@ public class DrawCanvas extends Canvas {
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, canvasWidth, canvasHeight);
 
-        for (int i = 0; i <= rowSize; i++) {
-            for (int j = 0; j <= colSize; j++) {
+        for (int i = 0; i < rowSize; i++) {
+            for (int j = 0; j < colSize; j++) {
                 tempBoard[i][j] = board[i][j] = 0xffffff;
             }
         }
@@ -174,9 +180,14 @@ public class DrawCanvas extends Canvas {
         @Override
         public void mouseReleased(MouseEvent e) {
             super.mouseReleased(e);
-            merge();
-            geometry.setStartPoint(null);
-            geometry.setEndPoint(null);
+
+            if (drawMode == DrawMode.PEN) {
+
+            } else {
+                merge();
+                geometry.setStartPoint(null);
+                geometry.setEndPoint(null);
+            }
 
         }
     }
@@ -186,12 +197,22 @@ public class DrawCanvas extends Canvas {
         public void mouseDragged(MouseEvent e) {
             super.mouseDragged(e);
 
-            if (e.getX() > canvasWidth || e.getY() > canvasHeight || e.getX() < 0 || e.getY() < 0) return;
 
-            if (geometry.getStartPoint() == null) {
-                geometry.setStartPoint(Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize));
+            if (e.getX() >= canvasWidth || e.getY() >= canvasHeight || e.getX() <= 0 || e.getY() <= 0) return;
+
+            Point2D point = Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize);
+            point.setColor(0xff0000);
+
+            if (drawMode == DrawMode.PEN) {
+                board[point.getComputerX()][point.getComputerY()] = point.getColor();
+                putPixel(point);
             } else {
-                geometry.setEndPoint(Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize));
+                if (geometry.getStartPoint() == null) {
+                    geometry.setStartPoint(point);
+                } else {
+                    geometry.setEndPoint(point);
+                    geometry.setupDraw();
+                }
             }
 
         }
@@ -199,7 +220,8 @@ public class DrawCanvas extends Canvas {
         @Override
         public void mouseMoved(MouseEvent e) {
             super.mouseMoved(e);
-
+            Point2D point = Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize);
+            mouseListener.mouseCoordinate(point.getX(), point.getY());
         }
     }
 
