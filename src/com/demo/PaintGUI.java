@@ -16,7 +16,7 @@ public class PaintGUI extends JFrame implements MouseCoordinateChangeListener {
     private JButton btnLine;
     private JButton btnClear;
     private JButton btnRect;
-    private JButton button6;
+    private JButton btnCircle;
     private JButton button7;
     private JButton button8;
     private JButton button9;
@@ -52,6 +52,11 @@ public class PaintGUI extends JFrame implements MouseCoordinateChangeListener {
         btnPen.addActionListener(e -> {
             canvas.setDrawMode(DrawMode.PEN);
             labelDrawMode.setText("MODE: PEN");
+        });
+
+        btnCircle.addActionListener(e->{
+            canvas.setDrawMode(DrawMode.CIRCLE);
+            labelDrawMode.setText("MODE: CIRCLE");
         });
 
         // Chọn màu vẽ

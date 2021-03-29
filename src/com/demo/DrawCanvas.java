@@ -71,6 +71,9 @@ public class DrawCanvas extends Canvas {
             case RECTANGLE -> {
                 geometry = new Rectangle(this);
             }
+            case CIRCLE -> {
+                geometry = new Circle(this);
+            }
         }
     }
 
@@ -81,6 +84,9 @@ public class DrawCanvas extends Canvas {
      */
     public void clearDraw(List<Point2D> point2DS) {
         for (Point2D p : point2DS) {
+            if (p.getComputerX() < 0 || p.getComputerY() < 0 || p.getComputerX() >= rowSize || p.getComputerY() >= colSize)
+                continue;
+
             if (p.getColor() != board[p.getComputerX()][p.getComputerY()]) {
                 p.setColor(board[p.getComputerX()][p.getComputerY()]);
                 tempBoard[p.getComputerX()][p.getComputerY()] = board[p.getComputerX()][p.getComputerY()];
@@ -96,6 +102,9 @@ public class DrawCanvas extends Canvas {
 //        System.out.println("aaa: "+point2DList.size());
 
         for (Point2D p : point2DList) {
+            if (p.getComputerX() < 0 || p.getComputerY() < 0 || p.getComputerX() >= rowSize || p.getComputerY() >= colSize)
+                continue;
+
             if (p.getColor() != board[p.getComputerX()][p.getComputerY()]) {
                 tempBoard[p.getComputerX()][p.getComputerY()] = p.getColor();
                 putPixel(p);
@@ -123,7 +132,7 @@ public class DrawCanvas extends Canvas {
         // TODO: Cần fix
 
         Graphics g = getGraphics();
-        g.setColor(new Color(0xCE503F));
+        g.setColor(new Color(0x3FBDCE));
         g.fillRect(rowSize / 2 * 5 + 1, 0, 4, canvasHeight);
         g.fillRect(0, colSize / 2 * 5 + 1, canvasWidth, 5);
     }
@@ -161,37 +170,6 @@ public class DrawCanvas extends Canvas {
         g.fillRect(point.getComputerX() * pixelSize + 1, point.getComputerY() * pixelSize + 1, pixelSize - 1, pixelSize - 1);
 
         g.dispose();
-    }
-
-    void put8Pixel(int x, int y, int color) {
-//        putPixel(x, y, color);
-//        putPixel(y, x, color);
-//        putPixel(y, -x, color);
-//        putPixel(x, -y, color);
-//        putPixel(-x, -y, color);
-//        putPixel(-y, -x, color);
-//        putPixel(-y, x, color);
-//        putPixel(-x, y, color);
-
-    } // Put8Pixel
-
-    void CircleMidPoint(int R) {
-        int x, y;
-
-        x = 0;
-        y = R;
-        put8Pixel(x, y, 0xff00ff);
-        double p = 1.25 - R; // 5/4-R
-        while (x < y) {
-            if (p < 0) p += 2 * x + 3;
-            else {
-                p += 2 * (x - y) + 5;
-                y--;
-            }
-            x++;
-            put8Pixel(x, y, 0xff00ff);
-        }
-
     }
 
 
