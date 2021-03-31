@@ -28,6 +28,7 @@ public class PaintGUI extends JFrame implements MouseCoordinateChangeListener {
     private JLabel labelCoordinate;
     private JCheckBox cbShowGrid;
     private JCheckBox cbShowAxis;
+    private JComboBox cbChooseLine;
 
     private DrawCanvas canvas;
 
@@ -82,6 +83,15 @@ public class PaintGUI extends JFrame implements MouseCoordinateChangeListener {
             if (isSelected != canvas.isShowGrid()) {
                 canvas.setShowGrid(isSelected);
             }
+        });
+
+        cbChooseLine.addActionListener(e -> {
+            String s = (String) cbChooseLine.getSelectedItem();
+            if (s.equals("DEFAULT")) DrawCanvas.lineMode = LineMode.DEFAULT;
+            else if (s.equals("DOT")) DrawCanvas.lineMode = LineMode.DOT;
+            else if (s.equals("DASH")) DrawCanvas.lineMode = LineMode.DASH;
+            else if (s.equals("DASHDOT")) DrawCanvas.lineMode = LineMode.DASH_DOT;
+            else if (s.equals("DASHDOTDOT")) DrawCanvas.lineMode = LineMode.DASH_DOT_DOT;
         });
 
 

@@ -19,7 +19,7 @@ public class Line extends Geometry {
 
     @Override
     public void setupDraw() {
-        if(startPoint != null && endPoint != null) {
+        if (startPoint != null && endPoint != null) {
             // Đổ listDraw cho listClear
             swapList();
 
@@ -35,8 +35,29 @@ public class Line extends Geometry {
         }
     }
 
-    public void drawLine(){
+    public void drawLine() {
         lineBresenham(startPoint.getX(), startPoint.getY(), endPoint.getX(), endPoint.getY());
+    }
+
+    private boolean isShowPoint(int index) {
+        switch (DrawCanvas.lineMode) {
+            case DEFAULT -> {
+                return true;
+            }
+            case DOT -> {
+                return (index % 2) == 0;
+            }
+            case DASH -> {
+                return (index % 4) < 3;
+            }
+            case DASH_DOT -> {
+                return (index % 6) < 3 || (index % 6) == 4;
+            }
+            case DASH_DOT_DOT -> {
+                return (index % 8 < 3) || (index % 8) == 4 || (index % 8) == 6;
+            }
+        }
+        return true;
     }
 
     private void lineBresenham(int x1, int y1, int x2, int y2) {
@@ -69,10 +90,10 @@ public class Line extends Geometry {
                 }
                 x += xUnit;
 
-//                if(cnt%4 < 3){
+                if (isShowPoint(cnt)) {
                     pt = new Point2D(x, y, DrawCanvas.currentColor);
                     listDraw.add(pt);
-//                }
+                }
                 cnt++;
 
             }
@@ -87,10 +108,10 @@ public class Line extends Geometry {
                 }
                 y += yUnit;
 
-//                if(cnt%4 < 3){
+                if (isShowPoint(cnt)) {
                     pt = new Point2D(x, y, DrawCanvas.currentColor);
                     listDraw.add(pt);
-//                }
+                }
                 cnt++;
 
             }

@@ -41,11 +41,6 @@ public class Pen extends Geometry{
     }
 
     @Override
-    public void setEndPoint(Point2D endPoint) {
-        this.endPoint = endPoint;
-    }
-
-    @Override
     protected void clearAll() {
         super.clearAll();
         line.clearAll();

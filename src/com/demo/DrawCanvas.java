@@ -18,9 +18,10 @@ public class DrawCanvas extends Canvas {
 
     public static final int pixelSize = 5;  // Kích thước 1 đơn vị
 
+    public static LineMode lineMode;
+
     public static int currentColor = 0xff0000;  // Màu vẽ đang chọn hiện tại
 
-    private int[][] axisBoard = new int[rowSize][colSize];      // Bảng màu canvas chính
     private int[][] board = new int[rowSize][colSize];      // Bảng màu canvas chính
     private int[][] tempBoard = new int[rowSize][colSize];  // Bảng màu phụ cho việc preview hình, sau khi `merge()` thì board và tempBoard sẽ hợp lại thành 1
 
@@ -55,7 +56,9 @@ public class DrawCanvas extends Canvas {
         }
 
         // Mode mặc định là vẽ PEN
-        setDrawMode(DrawMode.PEN);
+        setDrawMode(DrawMode.LINE);
+
+        lineMode = LineMode.DEFAULT;
 
         Cursor c = new Cursor(Cursor.DEFAULT_CURSOR);
         setCursor(c);
@@ -288,7 +291,9 @@ public class DrawCanvas extends Canvas {
             }
         }
 
-        drawGrid(); // Xóa xong thì vẽ lại lưới tọa độ
+        if(isShowAxis) drawAxis();
+
+        if(isShowGrid) drawGrid(); // Xóa xong thì vẽ lại lưới tọa độ
     }
 
     // Lớp cài đặt sự kiện nhấn chuột
@@ -296,13 +301,14 @@ public class DrawCanvas extends Canvas {
 
         @Override
         public void mouseClicked(MouseEvent e) {
+            // TODO: Them ve diem
             super.mouseClicked(e);
 
             // Lấy tọa độ con trỏ chuột trên màn hình, chuyển sang tọa độ Descartes
             Point2D point = Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize);
             // Set màu cho điểm vẽ là màu đang chọn
-            point.setColor(DrawCanvas.currentColor);
-            geometry.setStartPoint(point);
+//            point.setColor(DrawCanvas.currentColor);
+//            geometry.setStartPoint(point);
         }
 
         @Override
