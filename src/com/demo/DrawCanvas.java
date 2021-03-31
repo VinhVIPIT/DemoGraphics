@@ -20,6 +20,7 @@ public class DrawCanvas extends Canvas {
 
     public static int currentColor = 0xff0000;  // Màu vẽ đang chọn hiện tại
 
+    private int[][] axisBoard = new int[rowSize][colSize];      // Bảng màu canvas chính
     private int[][] board = new int[rowSize][colSize];      // Bảng màu canvas chính
     private int[][] tempBoard = new int[rowSize][colSize];  // Bảng màu phụ cho việc preview hình, sau khi `merge()` thì board và tempBoard sẽ hợp lại thành 1
 
@@ -28,6 +29,9 @@ public class DrawCanvas extends Canvas {
     private MouseCoordinateChangeListener mouseListener; // Sự kiện cập nhập tọa độ con chuột
 
     private Geometry geometry;  // Hình vẽ
+
+    private boolean isShowAxis = true;
+    private boolean isShowGrid = true;
 
 
     //------------------------------------------------------------------------//
@@ -53,12 +57,34 @@ public class DrawCanvas extends Canvas {
         // Mode mặc định là vẽ PEN
         setDrawMode(DrawMode.PEN);
 
+        Cursor c = new Cursor(Cursor.DEFAULT_CURSOR);
+        setCursor(c);
+
     }
 
+    public void setShowAxis(boolean showAxis) {
+        isShowAxis = showAxis;
+        if (isShowAxis) drawAxis();
+        else clearAxis();
+    }
+
+    public void setShowGrid(boolean showGrid) {
+        isShowGrid = showGrid;
+        if (isShowGrid) drawGrid();
+        else clearGrid();
+    }
+
+    public boolean isShowAxis() {
+        return isShowAxis;
+    }
+
+    public boolean isShowGrid() {
+        return isShowGrid;
+    }
 
     /*
-    Cài đặt hình muốn vẽ
-     */
+                Cài đặt hình muốn vẽ
+                 */
     public void setDrawMode(DrawMode drawMode) {
         this.drawMode = drawMode;
         switch (drawMode) {
@@ -90,6 +116,11 @@ public class DrawCanvas extends Canvas {
             if (p.getColor() != board[p.getComputerX()][p.getComputerY()]) {
                 p.setColor(board[p.getComputerX()][p.getComputerY()]);
                 tempBoard[p.getComputerX()][p.getComputerY()] = board[p.getComputerX()][p.getComputerY()];
+
+                if ((p.getX() == 0 || p.getY() == 0) && p.getColor() == 0xffffff) {
+                    if (isShowAxis) p.setColor(0x3FBDCE);
+                }
+
                 putPixel(p);
             }
         }
@@ -129,20 +160,62 @@ public class DrawCanvas extends Canvas {
      * Vẽ trục tọa độ
      */
     private void drawAxis() {
-        // TODO: Cần fix
 
-        Graphics g = getGraphics();
-        g.setColor(new Color(0x3FBDCE));
-        g.fillRect(rowSize / 2 * 5 + 1, 0, 4, canvasHeight);
-        g.fillRect(0, colSize / 2 * 5 + 1, canvasWidth, 5);
+        Point2D p;
+
+        int j = colSize / 2;
+        int i = 0;
+        for (; i < rowSize; i++) {
+            if (board[i][j] == 0xffffff) {
+                p = Point2D.fromComputerCoordinate(i, j);
+                p.setColor(0x3FBDCE);
+                putPixel(p);
+            }
+        }
+
+        i = rowSize / 2;
+        j = 0;
+        for (; j < colSize; j++) {
+            if (board[i][j] == 0xffffff) {
+                p = Point2D.fromComputerCoordinate(i, j);
+                p.setColor(0x3FBDCE);
+                putPixel(p);
+            }
+        }
+
+    }
+
+    /*
+     * Xóa 2 trục tọa độ
+     */
+    private void clearAxis() {
+        Point2D p;
+
+        int j = colSize / 2;
+        int i = 0;
+        for (; i < rowSize; i++) {
+            p = Point2D.fromComputerCoordinate(i, j);
+            p.setColor(board[i][j]);
+            putPixel(p);
+        }
+
+        i = rowSize / 2;
+        j = 0;
+        for (; j < colSize; j++) {
+            p = Point2D.fromComputerCoordinate(i, j);
+            p.setColor(board[i][j]);
+            putPixel(p);
+        }
     }
 
     /*
      * Vẽ lưới hệ tọa độ
      */
     private void drawGrid() {
+
         Graphics g = getGraphics();
         g.setColor(new Color(0xFFD9C7C7));
+
         for (int i = 0; i <= rowSize; i++) {
             g.drawLine(i * pixelSize, 0, i * pixelSize, canvasHeight);
         }
@@ -152,11 +225,35 @@ public class DrawCanvas extends Canvas {
         g.dispose();
     }
 
+    /*
+     * Xóa lưới tọa độ
+     */
+    private void clearGrid() {
+        Point2D p;
+
+        for (int i = 0; i < rowSize; i++) {
+            for (int j = 0; j < colSize; j++) {
+                p = Point2D.fromComputerCoordinate(i, j);
+                p.setColor(board[i][j]);
+
+                if (i == rowSize / 2 || j == colSize / 2) {
+                    if (board[i][j] == 0xffffff) p.setColor(0x3FBDCE);
+                }
+                putPixel(p);
+            }
+        }
+
+        if (isShowAxis) drawAxis();
+    }
+
+    /*
+     * Paint Super Pha-ke
+     */
     @Override
     public void paint(Graphics g) {
         super.paint(g);
 
-//        drawAxis();
+        drawAxis();
         drawGrid(); // Vẽ ô lưới
 
     }
@@ -166,8 +263,10 @@ public class DrawCanvas extends Canvas {
         Graphics g = DrawCanvas.this.getGraphics();
         g.setColor(new Color(point.getColor()));
 
-        // Công thức chỉ áp dụng khi vẽ ô lưới
-        g.fillRect(point.getComputerX() * pixelSize + 1, point.getComputerY() * pixelSize + 1, pixelSize - 1, pixelSize - 1);
+        if (isShowGrid)
+            g.fillRect(point.getComputerX() * pixelSize + 1, point.getComputerY() * pixelSize + 1, pixelSize - 1, pixelSize - 1);
+        else
+            g.fillRect(point.getComputerX() * pixelSize, point.getComputerY() * pixelSize, pixelSize, pixelSize);
 
         g.dispose();
     }

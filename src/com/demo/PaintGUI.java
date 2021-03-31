@@ -26,6 +26,8 @@ public class PaintGUI extends JFrame implements MouseCoordinateChangeListener {
     private JPanel mainPanel;
     private JLabel labelDrawMode;
     private JLabel labelCoordinate;
+    private JCheckBox cbShowGrid;
+    private JCheckBox cbShowAxis;
 
     private DrawCanvas canvas;
 
@@ -54,7 +56,7 @@ public class PaintGUI extends JFrame implements MouseCoordinateChangeListener {
             labelDrawMode.setText("MODE: PEN");
         });
 
-        btnCircle.addActionListener(e->{
+        btnCircle.addActionListener(e -> {
             canvas.setDrawMode(DrawMode.CIRCLE);
             labelDrawMode.setText("MODE: CIRCLE");
         });
@@ -69,6 +71,21 @@ public class PaintGUI extends JFrame implements MouseCoordinateChangeListener {
 
         });
 
+        cbShowAxis.addActionListener(e -> {
+            boolean isSelected = cbShowAxis.isSelected();
+            if (isSelected != canvas.isShowAxis()) {
+                canvas.setShowAxis(isSelected);
+            }
+        });
+        cbShowGrid.addActionListener(e -> {
+            boolean isSelected = cbShowGrid.isSelected();
+            if (isSelected != canvas.isShowGrid()) {
+                canvas.setShowGrid(isSelected);
+            }
+        });
+
+
+        // Important
         add(rootPanel);
 
 
