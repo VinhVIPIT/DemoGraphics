@@ -67,6 +67,11 @@ public class Rectangle extends Geometry {
         }
     }
 
+    @Override
+    public void showPointsCoordinate() {
+
+    }
+
     private void drawRectangle(int x1, int y1, int x2, int y2) {
         int xUnit = 1, yUnit = 1;
         if (x2 < x1) xUnit = -xUnit;

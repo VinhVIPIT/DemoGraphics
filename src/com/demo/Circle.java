@@ -30,6 +30,11 @@ public class Circle extends Geometry {
         }
     }
 
+    @Override
+    public void showPointsCoordinate() {
+
+    }
+
     void put8Pixel(int x, int y, int color) {
         int xc = startPoint.getX();
         int yc = startPoint.getY();

@@ -6,5 +6,5 @@ package com.demo;
  */
 
 public enum LineMode {
-    DEFAULT, DASH, DOT, DASH_DOT, DASH_DOT_DOT;
+    DEFAULT, DASH, DOT, DASH_DOT, DASH_DOT_DOT, ARROW;
 }

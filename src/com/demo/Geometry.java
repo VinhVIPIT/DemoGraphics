@@ -26,6 +26,8 @@ public abstract class Geometry {
 
     public abstract void setupDraw();
 
+    public abstract void showPointsCoordinate();
+
     /*
      * Lọc ra những điểm cần xóa và xóa nó
      */
@@ -51,6 +53,7 @@ public abstract class Geometry {
     protected final void drawNewPoints() {
         canvas.applyDraw(listDraw);
     }
+
 
     /*
      * Đổ listDraw cho listClear

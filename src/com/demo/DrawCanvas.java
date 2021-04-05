@@ -86,8 +86,8 @@ public class DrawCanvas extends Canvas {
     }
 
     /*
-                Cài đặt hình muốn vẽ
-                 */
+     Cài đặt hình muốn vẽ
+     */
     public void setDrawMode(DrawMode drawMode) {
         this.drawMode = drawMode;
         switch (drawMode) {
@@ -150,6 +150,9 @@ public class DrawCanvas extends Canvas {
      * Hợp nhất nét vẽ preview của hình lên canvas
      */
     public void merge() {
+//        System.out.println("merge");
+//        geometry.showPointsCoordinate();
+
         for (int i = 0; i < rowSize; i++) {
             for (int j = 0; j < colSize; j++) {
                 if (board[i][j] != tempBoard[i][j]) {
@@ -225,7 +228,7 @@ public class DrawCanvas extends Canvas {
         for (int i = 0; i <= colSize; i++) {
             g.drawLine(0, i * pixelSize, canvasWidth, i * pixelSize);
         }
-        g.dispose();
+//        g.dispose();
     }
 
     /*
@@ -256,8 +259,21 @@ public class DrawCanvas extends Canvas {
     public void paint(Graphics g) {
         super.paint(g);
 
-        drawAxis();
-        drawGrid(); // Vẽ ô lưới
+        System.out.println("Paint");
+
+        if(isShowAxis) drawAxis();
+        if(isShowGrid) drawGrid(); // Vẽ ô lưới
+
+        Point2D p;
+        for (int i=0; i<rowSize; i++){
+            for(int j=0; j<colSize; j++){
+                if(board[i][j] != 0xffffff){
+                    p = Point2D.fromComputerCoordinate(i,j);
+                    p.setColor(board[i][j]);
+                    putPixel(p);
+                }
+            }
+        }
 
     }
 
@@ -271,7 +287,7 @@ public class DrawCanvas extends Canvas {
         else
             g.fillRect(point.getComputerX() * pixelSize, point.getComputerY() * pixelSize, pixelSize, pixelSize);
 
-        g.dispose();
+//        g.dispose();
     }
 
 
@@ -291,9 +307,9 @@ public class DrawCanvas extends Canvas {
             }
         }
 
-        if(isShowAxis) drawAxis();
+        if (isShowAxis) drawAxis();
 
-        if(isShowGrid) drawGrid(); // Xóa xong thì vẽ lại lưới tọa độ
+        if (isShowGrid) drawGrid(); // Xóa xong thì vẽ lại lưới tọa độ
     }
 
     // Lớp cài đặt sự kiện nhấn chuột
@@ -307,8 +323,8 @@ public class DrawCanvas extends Canvas {
             // Lấy tọa độ con trỏ chuột trên màn hình, chuyển sang tọa độ Descartes
             Point2D point = Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize);
             // Set màu cho điểm vẽ là màu đang chọn
-//            point.setColor(DrawCanvas.currentColor);
-//            geometry.setStartPoint(point);
+            point.setColor(DrawCanvas.currentColor);
+            geometry.setStartPoint(point);
         }
 
         @Override
@@ -340,6 +356,8 @@ public class DrawCanvas extends Canvas {
 
             // Lấy tọa độ con trỏ chuột trên màn hình, chuyển sang tọa độ Descartes
             Point2D point = Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize);
+            mouseListener.mouseCoordinate(point.getX(), point.getY());
+
             // Set màu cho điểm vẽ là màu đang chọn
             point.setColor(DrawCanvas.currentColor);
 

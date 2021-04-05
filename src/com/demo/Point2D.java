@@ -62,6 +62,7 @@ public class Point2D {
         return new Point2D(-DrawCanvas.rowSize / 2 + xm, DrawCanvas.colSize / 2 - ym);
     }
 
+
     public int getColor() {
         return color;
     }
@@ -76,5 +77,18 @@ public class Point2D {
      */
     public boolean isSamePoint(Point2D point) {
         return x == point.x && y == point.y && color == point.color;
+    }
+
+    public Point2D translate(int translateX, int translateY) {
+        return new Point2D(x + translateX, y + translateY, color);
+    }
+
+    /*
+     * angleRad là góc xoay, tính bằng radian
+     */
+    public Point2D rotate(double angleRad) {
+        return new Point2D((int) Math.round(Math.cos(angleRad) * x - Math.sin(angleRad) * y),
+                (int) Math.round(Math.sin(angleRad) * x + Math.cos(angleRad) * y),
+                color);
     }
 }

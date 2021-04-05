@@ -40,7 +40,9 @@ public class PaintGUI extends JFrame implements MouseCoordinateChangeListener {
         setResizable(false);
 
         canvas = new DrawCanvas(this);
+
         mainPanel.add(canvas);
+
 
         btnClear.addActionListener(e -> canvas.clearScreen());
 
@@ -48,50 +50,59 @@ public class PaintGUI extends JFrame implements MouseCoordinateChangeListener {
             canvas.setDrawMode(DrawMode.LINE);
             labelDrawMode.setText("MODE: LINE");
         });
-        btnRect.addActionListener(e -> {
+        btnRect.addActionListener(e ->
+        {
             canvas.setDrawMode(DrawMode.RECTANGLE);
             labelDrawMode.setText("MODE: RECT");
         });
-        btnPen.addActionListener(e -> {
+        btnPen.addActionListener(e ->
+        {
             canvas.setDrawMode(DrawMode.PEN);
             labelDrawMode.setText("MODE: PEN");
         });
 
-        btnCircle.addActionListener(e -> {
+        btnCircle.addActionListener(e ->
+        {
             canvas.setDrawMode(DrawMode.CIRCLE);
             labelDrawMode.setText("MODE: CIRCLE");
         });
 
         // Chọn màu vẽ
-        btnChooseColor.addActionListener(e -> {
+        btnChooseColor.addActionListener(e ->
+        {
             Color color = JColorChooser.showDialog(null, "Choose Color", btnChooseColor.getBackground());
             if (color != null) {
                 btnChooseColor.setBackground(color);
                 DrawCanvas.currentColor = color.getRGB();
             }
-
         });
 
-        cbShowAxis.addActionListener(e -> {
+        cbShowAxis.addActionListener(e ->
+        {
             boolean isSelected = cbShowAxis.isSelected();
             if (isSelected != canvas.isShowAxis()) {
                 canvas.setShowAxis(isSelected);
             }
         });
-        cbShowGrid.addActionListener(e -> {
+
+        cbShowGrid.addActionListener(e ->
+        {
             boolean isSelected = cbShowGrid.isSelected();
             if (isSelected != canvas.isShowGrid()) {
                 canvas.setShowGrid(isSelected);
             }
         });
 
-        cbChooseLine.addActionListener(e -> {
+        cbChooseLine.addActionListener(e ->
+
+        {
             String s = (String) cbChooseLine.getSelectedItem();
             if (s.equals("DEFAULT")) DrawCanvas.lineMode = LineMode.DEFAULT;
             else if (s.equals("DOT")) DrawCanvas.lineMode = LineMode.DOT;
             else if (s.equals("DASH")) DrawCanvas.lineMode = LineMode.DASH;
             else if (s.equals("DASHDOT")) DrawCanvas.lineMode = LineMode.DASH_DOT;
             else if (s.equals("DASHDOTDOT")) DrawCanvas.lineMode = LineMode.DASH_DOT_DOT;
+            else if (s.equals("ARROW")) DrawCanvas.lineMode = LineMode.ARROW;
         });
 
 

@@ -1,5 +1,7 @@
 package com.demo;
 
+import java.awt.*;
+
 /**
  * Create by VinhIT
  * On 25/03/2021
@@ -35,8 +37,46 @@ public class Line extends Geometry {
         }
     }
 
+    /*
+     * Hiển thị tọa độ 2 điểm start và end
+     */
+    @Override
+    public void showPointsCoordinate() {
+        Graphics g = canvas.getGraphics();
+        g.setColor(Color.BLACK);
+
+        if (startPoint != null)
+            g.drawString(String.format("(%d, %d)", startPoint.getX(), startPoint.getY()), startPoint.getComputerX() * 5 + 5, startPoint.getComputerY() * 5 - 5);
+        if (endPoint != null)
+            g.drawString(String.format("(%d, %d)", endPoint.getX(), endPoint.getY()), endPoint.getComputerX() * 5 + 5, endPoint.getComputerY() * 5 - 5);
+
+//        g.dispose();
+    }
+
     public void drawLine() {
         lineBresenham(startPoint.getX(), startPoint.getY(), endPoint.getX(), endPoint.getY());
+
+        if (DrawCanvas.lineMode == LineMode.ARROW) {
+            Point2D pA = startPoint.translate(-startPoint.getX(), -startPoint.getY());
+            Point2D pB = endPoint.translate(-startPoint.getX(), -startPoint.getY());
+
+            Vector2D vAB = new Vector2D(pA, pB);
+            double angle = vAB.angleRadian(Vector2D.oX);
+
+            Point2D pC = pB.rotate(pB.getY() < pA.getY() ? angle : -angle);
+
+            Point2D pU = new Point2D(pC.getX() - 4, pC.getY() + 4);
+            Point2D pV = new Point2D(pC.getX() - 4, pC.getY() - 4);
+
+            pU = pU.rotate(pB.getY() < pA.getY() ? -angle : angle);
+            pV = pV.rotate(pB.getY() < pA.getY() ? -angle : angle);
+
+            pU = pU.translate(startPoint.getX(), startPoint.getY());
+            pV = pV.translate(startPoint.getX(), startPoint.getY());
+
+            lineBresenham(endPoint.getX(), endPoint.getY(), pU.getX(), pU.getY());
+            lineBresenham(endPoint.getX(), endPoint.getY(), pV.getX(), pV.getY());
+        }
     }
 
     private boolean isShowPoint(int index) {
@@ -118,5 +158,6 @@ public class Line extends Geometry {
         }
 
     }
+
 
 }
