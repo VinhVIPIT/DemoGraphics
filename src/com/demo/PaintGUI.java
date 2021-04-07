@@ -18,11 +18,6 @@ public class PaintGUI extends JFrame implements MouseCoordinateChangeListener {
     private JButton btnRect;
     private JButton btnCircle;
     private JButton btnPoint;
-    private JButton button8;
-    private JButton button9;
-    private JButton button10;
-    private JButton button11;
-    private JButton button12;
     private JPanel mainPanel;
     private JLabel labelDrawMode;
     private JLabel labelCoordinate;
