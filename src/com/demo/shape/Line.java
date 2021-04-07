@@ -87,21 +87,21 @@ public class Line extends Geometry {
     }
 
     private boolean isShowPoint(int index) {
-        switch (DrawCanvas.lineMode) {
-            case DEFAULT -> {
+        switch (DrawCanvas.lineMode) {  // DrawCanvas.lineMode là chế độ vẽ
+            case DEFAULT -> {           // Nét liền
                 return true;
             }
-            case DOT -> {
+            case DOT -> {               // Nét chấm
                 return (index % 2) == 0;
             }
-            case DASH -> {
+            case DASH -> {              // Nét gạch
                 return (index % 4) < 3;
             }
-            case DASH_DOT -> {
+            case DASH_DOT -> {          // Nét gạch chấm
                 return (index % 6) < 3 || (index % 6) == 4;
             }
-            case DASH_DOT_DOT -> {
-                return (index % 8 < 3) || (index % 8) == 4 || (index % 8) == 6;
+            case DASH_DOT_DOT -> {      // Nét gạch 2 chấm
+                return (index % 12 < 4) || (index % 12) == 6 || (index % 12) == 9;
             }
         }
         return true;
@@ -122,11 +122,15 @@ public class Line extends Geometry {
             yUnit = -yUnit;
 
         Point2D pt = new Point2D(x, y, DrawCanvas.currentColor);
+        // listDraw là List chứa danh sách những điểm sẽ vẽ lên màn hình
         listDraw.add(pt);
 
+        // biến này đếm vị trí của điểm vẽ để xét xem nó có được hiển thị cho phù hợp với nét vẽ hay không
         int cnt = 1;
 
         if (Dx >= Dy) {
+            // Trường hợp này ta chạy vòng lặp while theo biến x
+
             p = 2 * Dy - Dx;
 
             while (x != x2) {
@@ -137,14 +141,18 @@ public class Line extends Geometry {
                 }
                 x += xUnit;
 
+                // Kiểm tra xem điểm đó được hiển thị hay không, nếu được thì thêm vào list
                 if (isShowPoint(cnt)) {
                     pt = new Point2D(x, y, DrawCanvas.currentColor);
                     listDraw.add(pt);
                 }
+                // Tăng giá trị biến đếm lên
                 cnt++;
 
             }
         } else {
+            // Trường hợp này ta chạy vòng lặp while theo biến y
+
             p = 2 * Dx - Dy;
 
             while (y != y2) {
