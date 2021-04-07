@@ -1,4 +1,7 @@
-package com.demo;
+package com.demo.shape;
+
+import com.demo.DrawCanvas;
+import com.demo.models.Point2D;
 
 /**
  * Create by VinhIT

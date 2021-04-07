@@ -17,7 +17,7 @@ public class PaintGUI extends JFrame implements MouseCoordinateChangeListener {
     private JButton btnClear;
     private JButton btnRect;
     private JButton btnCircle;
-    private JButton button7;
+    private JButton btnPoint;
     private JButton button8;
     private JButton button9;
     private JButton button10;
@@ -29,6 +29,7 @@ public class PaintGUI extends JFrame implements MouseCoordinateChangeListener {
     private JCheckBox cbShowGrid;
     private JCheckBox cbShowAxis;
     private JComboBox cbChooseLine;
+    private JCheckBox cbShowPointCoord;
 
     private DrawCanvas canvas;
 
@@ -66,6 +67,11 @@ public class PaintGUI extends JFrame implements MouseCoordinateChangeListener {
             canvas.setDrawMode(DrawMode.CIRCLE);
             labelDrawMode.setText("MODE: CIRCLE");
         });
+        btnPoint.addActionListener(e ->
+        {
+            canvas.setDrawMode(DrawMode.POINT);
+            labelDrawMode.setText("MODE: POINT");
+        });
 
         // Chọn màu vẽ
         btnChooseColor.addActionListener(e ->
@@ -80,17 +86,17 @@ public class PaintGUI extends JFrame implements MouseCoordinateChangeListener {
         cbShowAxis.addActionListener(e ->
         {
             boolean isSelected = cbShowAxis.isSelected();
-            if (isSelected != canvas.isShowAxis()) {
                 canvas.setShowAxis(isSelected);
-            }
         });
 
         cbShowGrid.addActionListener(e ->
         {
             boolean isSelected = cbShowGrid.isSelected();
-            if (isSelected != canvas.isShowGrid()) {
                 canvas.setShowGrid(isSelected);
-            }
+        });
+
+        cbShowPointCoord.addActionListener(e->{
+            canvas.setShowPointCoord(cbShowPointCoord.isSelected());
         });
 
         cbChooseLine.addActionListener(e ->

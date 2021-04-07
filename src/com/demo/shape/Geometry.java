@@ -1,4 +1,7 @@
-package com.demo;
+package com.demo.shape;
+
+import com.demo.DrawCanvas;
+import com.demo.models.Point2D;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +86,7 @@ public abstract class Geometry {
     /*
      * Xóa toàn bộ dữ liệu
      */
-    protected void clearAll() {
+    public void clearAll() {
         listDraw.clear();
         listClear.clear();
         startPoint = endPoint = null;

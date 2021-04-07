@@ -1,6 +1,7 @@
-package com.demo;
+package com.demo.shape;
 
-import java.awt.*;
+import com.demo.DrawCanvas;
+import com.demo.models.Point2D;
 
 /**
  * Create by VinhIT
@@ -34,12 +35,13 @@ public class Pen extends Geometry {
 
     @Override
     public void showPointsCoordinate() {
-        Graphics g = canvas.getGraphics();
-        g.setColor(Color.BLACK);
-
-        if (startPoint != null) {
-            g.drawString(String.format("(%d, %d)", startPoint.getX(), startPoint.getY()), startPoint.getComputerX() * 5 - 5, startPoint.getComputerY() * 5 - 5);
-        }
+//        canvas.addPointsToDrawCoord(startPoint);
+//        Graphics g = canvas.getGraphics();
+//        g.setColor(Color.BLACK);
+//
+//        if (startPoint != null) {
+//            g.drawString(String.format("(%d, %d)", startPoint.getX(), startPoint.getY()), startPoint.getComputerX() * 5 - 5, startPoint.getComputerY() * 5 - 5);
+//        }
     }
 
     @Override
@@ -53,7 +55,7 @@ public class Pen extends Geometry {
     }
 
     @Override
-    protected void clearAll() {
+    public void clearAll() {
         super.clearAll();
         line.clearAll();
     }

@@ -1,6 +1,9 @@
-package com.demo;
+package com.demo.shape;
 
-import java.awt.*;
+import com.demo.DrawCanvas;
+import com.demo.LineMode;
+import com.demo.models.Point2D;
+import com.demo.models.Vector2D;
 
 /**
  * Create by VinhIT
@@ -34,6 +37,8 @@ public class Line extends Geometry {
 
             // Vẽ những điểm thuộc listDraw
             drawNewPoints();
+
+            showPointsCoordinate();
         }
     }
 
@@ -42,13 +47,15 @@ public class Line extends Geometry {
      */
     @Override
     public void showPointsCoordinate() {
-        Graphics g = canvas.getGraphics();
-        g.setColor(Color.BLACK);
-
-        if (startPoint != null)
-            g.drawString(String.format("(%d, %d)", startPoint.getX(), startPoint.getY()), startPoint.getComputerX() * 5 + 5, startPoint.getComputerY() * 5 - 5);
-        if (endPoint != null)
-            g.drawString(String.format("(%d, %d)", endPoint.getX(), endPoint.getY()), endPoint.getComputerX() * 5 + 5, endPoint.getComputerY() * 5 - 5);
+//        canvas.drawPointsCoordinate(startPoint);
+//        canvas.drawPointsCoordinate(endPoint);
+//        Graphics g = canvas.getGraphics();
+//        g.setColor(Color.BLACK);
+//
+//        if (startPoint != null)
+//            g.drawString(String.format("(%d, %d)", startPoint.getX(), startPoint.getY()), startPoint.getComputerX() * 5 + 5, startPoint.getComputerY() * 5 - 5);
+//        if (endPoint != null)
+//            g.drawString(String.format("(%d, %d)", endPoint.getX(), endPoint.getY()), endPoint.getComputerX() * 5 + 5, endPoint.getComputerY() * 5 - 5);
 
 //        g.dispose();
     }

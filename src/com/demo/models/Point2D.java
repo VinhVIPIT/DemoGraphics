@@ -1,4 +1,6 @@
-package com.demo;
+package com.demo.models;
+
+import com.demo.DrawCanvas;
 
 /**
  * Create by VinhIT

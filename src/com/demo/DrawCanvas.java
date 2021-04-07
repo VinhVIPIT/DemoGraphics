@@ -1,10 +1,16 @@
 package com.demo;
 
+import com.demo.models.Point2D;
+import com.demo.shape.Rectangle;
+import com.demo.shape.*;
+
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Create by VinhIT
@@ -33,7 +39,11 @@ public class DrawCanvas extends Canvas {
 
     private boolean isShowAxis = true;
     private boolean isShowGrid = true;
+    private boolean isShowPointCoord = false;
 
+    private boolean finishDraw = false;
+
+    private Set<Point2D> coordinatePoints = new HashSet<>();
 
     //------------------------------------------------------------------------//
 
@@ -57,9 +67,8 @@ public class DrawCanvas extends Canvas {
 
         // Mode mặc định là vẽ PEN
         setDrawMode(DrawMode.LINE);
-
+//        setShowPointCoord(false);
         lineMode = LineMode.DEFAULT;
-
         Cursor c = new Cursor(Cursor.DEFAULT_CURSOR);
         setCursor(c);
 
@@ -77,20 +86,40 @@ public class DrawCanvas extends Canvas {
         else clearGrid();
     }
 
-    public boolean isShowAxis() {
-        return isShowAxis;
-    }
+    public void setShowPointCoord(boolean showPointCoord) {
+        isShowPointCoord = showPointCoord;
+        if (isShowPointCoord) {
+            drawAllPoints();
+            repaint();
+        } else {
+            System.out.println("no show");
 
-    public boolean isShowGrid() {
-        return isShowGrid;
+            Point2D p;
+            for (int i = 0; i < rowSize; i++) {
+                for (int j = 0; j < colSize; j++) {
+                    p = Point2D.fromComputerCoordinate(i, j);
+                    if ((i == rowSize / 2 || j == colSize / 2) && isShowAxis) {
+                        p.setColor(0x3FBDCE);
+                    } else {
+                        p.setColor(board[i][j]);
+                    }
+                    putPixel(p);
+                }
+            }
+
+            if (isShowGrid) drawGrid();
+        }
     }
 
     /*
-     Cài đặt hình muốn vẽ
+     * Cài đặt hình muốn vẽ
      */
     public void setDrawMode(DrawMode drawMode) {
         this.drawMode = drawMode;
         switch (drawMode) {
+            case POINT -> {
+                geometry = new SinglePoint(this);
+            }
             case PEN -> {
                 geometry = new Pen(this);
             }
@@ -106,6 +135,24 @@ public class DrawCanvas extends Canvas {
         }
     }
 
+    public void addPointsToDrawCoord(Point2D p) {
+        coordinatePoints.add(p);
+    }
+
+    public void drawPointsCoordinate(Point2D p) {
+        Graphics g = getGraphics();
+        g.setColor(Color.BLACK);
+        g.drawString(String.format("(%d, %d)", p.getX(), p.getY()), p.getComputerX() * 5 - 5, p.getComputerY() * 5 - 5);
+        g.dispose();
+    }
+
+    public void drawAllPoints() {
+        if (!isShowPointCoord) return;
+
+        for (Point2D p : coordinatePoints) {
+            drawPointsCoordinate(p);
+        }
+    }
 
     /*
      * Xóa những điểm đã cũ mà không thuộc hình vẽ preview
@@ -133,8 +180,6 @@ public class DrawCanvas extends Canvas {
      * Vẽ bản preview của hình
      */
     public void applyDraw(List<Point2D> point2DList) {
-//        System.out.println("aaa: "+point2DList.size());
-
         for (Point2D p : point2DList) {
             if (p.getComputerX() < 0 || p.getComputerY() < 0 || p.getComputerX() >= rowSize || p.getComputerY() >= colSize)
                 continue;
@@ -144,15 +189,14 @@ public class DrawCanvas extends Canvas {
                 putPixel(p);
             }
         }
+
+        drawAllPoints();
     }
 
     /*
      * Hợp nhất nét vẽ preview của hình lên canvas
      */
     public void merge() {
-//        System.out.println("merge");
-//        geometry.showPointsCoordinate();
-
         for (int i = 0; i < rowSize; i++) {
             for (int j = 0; j < colSize; j++) {
                 if (board[i][j] != tempBoard[i][j]) {
@@ -160,13 +204,14 @@ public class DrawCanvas extends Canvas {
                 }
             }
         }
+
+        if (isShowPointCoord) drawAllPoints();
     }
 
     /*
      * Vẽ trục tọa độ
      */
     private void drawAxis() {
-
         Point2D p;
 
         int j = colSize / 2;
@@ -241,15 +286,16 @@ public class DrawCanvas extends Canvas {
             for (int j = 0; j < colSize; j++) {
                 p = Point2D.fromComputerCoordinate(i, j);
                 p.setColor(board[i][j]);
-
-                if (i == rowSize / 2 || j == colSize / 2) {
-                    if (board[i][j] == 0xffffff) p.setColor(0x3FBDCE);
+                if (isShowAxis) {
+                    if (i == rowSize / 2 || j == colSize / 2) {
+                        if (board[i][j] == 0xffffff) p.setColor(0x3FBDCE);
+                    }
                 }
                 putPixel(p);
             }
         }
 
-        if (isShowAxis) drawAxis();
+//        if (isShowAxis) drawAxis();
     }
 
     /*
@@ -259,27 +305,27 @@ public class DrawCanvas extends Canvas {
     public void paint(Graphics g) {
         super.paint(g);
 
-        System.out.println("Paint");
-
-        if(isShowAxis) drawAxis();
-        if(isShowGrid) drawGrid(); // Vẽ ô lưới
+        if (isShowAxis) drawAxis();
+        if (isShowGrid) drawGrid(); // Vẽ ô lưới
 
         Point2D p;
-        for (int i=0; i<rowSize; i++){
-            for(int j=0; j<colSize; j++){
-                if(board[i][j] != 0xffffff){
-                    p = Point2D.fromComputerCoordinate(i,j);
+        for (int i = 0; i < rowSize; i++) {
+            for (int j = 0; j < colSize; j++) {
+                if (board[i][j] != 0xffffff) {
+                    p = Point2D.fromComputerCoordinate(i, j);
                     p.setColor(board[i][j]);
                     putPixel(p);
                 }
             }
         }
 
+        drawAllPoints();
+
     }
 
 
     private void putPixel(Point2D point) {
-        Graphics g = DrawCanvas.this.getGraphics();
+        Graphics g = getGraphics();
         g.setColor(new Color(point.getColor()));
 
         if (isShowGrid)
@@ -287,7 +333,7 @@ public class DrawCanvas extends Canvas {
         else
             g.fillRect(point.getComputerX() * pixelSize, point.getComputerY() * pixelSize, pixelSize, pixelSize);
 
-//        g.dispose();
+        g.dispose();
     }
 
 
@@ -295,6 +341,8 @@ public class DrawCanvas extends Canvas {
      * Xóa toàn bộ màn hình, mặc định màn hình sẽ quay về màu trắng
      */
     public void clearScreen() {
+        coordinatePoints.clear();
+
         geometry.clearAll();
 
         Graphics g = getGraphics();
@@ -310,42 +358,44 @@ public class DrawCanvas extends Canvas {
         if (isShowAxis) drawAxis();
 
         if (isShowGrid) drawGrid(); // Xóa xong thì vẽ lại lưới tọa độ
+
     }
 
     // Lớp cài đặt sự kiện nhấn chuột
     public class MyMouseAdapter extends MouseAdapter {
 
         @Override
+        public void mouseExited(MouseEvent e) {
+            super.mouseExited(e);
+        }
+
+        @Override
         public void mouseClicked(MouseEvent e) {
             // TODO: Them ve diem
             super.mouseClicked(e);
 
-            // Lấy tọa độ con trỏ chuột trên màn hình, chuyển sang tọa độ Descartes
-            Point2D point = Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize);
-            // Set màu cho điểm vẽ là màu đang chọn
-            point.setColor(DrawCanvas.currentColor);
-            geometry.setStartPoint(point);
+            if (geometry instanceof SinglePoint) {
+                Point2D point = Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize);
+                // Set màu cho điểm vẽ là màu đang chọn
+                point.setColor(DrawCanvas.currentColor);
+                geometry.setStartPoint(point);
+                geometry.setupDraw();
+
+                mouseReleased(e);
+            }
+
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            // Hàm này được gọi khi chuột được nhả ra
-
             super.mouseReleased(e);
-
-            // Hợp nhất hình vừa vẽ lên canvas
             merge();
-
-            // Reset các thuộc tính của Hình vẽ
             geometry.clearAll();
-
         }
     }
 
 
-    // Lớp cài đặt sự kiện di chuột
     public class MyMouseMotionAdapter extends MouseMotionAdapter {
-
 
         @Override
         public void mouseDragged(MouseEvent e) {
@@ -353,6 +403,7 @@ public class DrawCanvas extends Canvas {
 
             super.mouseDragged(e);
             if (e.getX() >= canvasWidth || e.getY() >= canvasHeight || e.getX() <= 0 || e.getY() <= 0) return;
+            if (geometry instanceof SinglePoint) return;
 
             // Lấy tọa độ con trỏ chuột trên màn hình, chuyển sang tọa độ Descartes
             Point2D point = Point2D.fromComputerCoordinate(e.getX() / DrawCanvas.pixelSize, e.getY() / DrawCanvas.pixelSize);
