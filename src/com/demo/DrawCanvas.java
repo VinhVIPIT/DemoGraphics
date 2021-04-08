@@ -84,6 +84,8 @@ public class DrawCanvas extends Canvas {
         isShowGrid = showGrid;
         if (isShowGrid) drawGrid();
         else clearGrid();
+
+        if(isShowPointCoord) drawAllPoints();
     }
 
     public void setShowPointCoord(boolean showPointCoord) {

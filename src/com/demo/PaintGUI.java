@@ -81,16 +81,16 @@ public class PaintGUI extends JFrame implements MouseCoordinateChangeListener {
         cbShowAxis.addActionListener(e ->
         {
             boolean isSelected = cbShowAxis.isSelected();
-                canvas.setShowAxis(isSelected);
+            canvas.setShowAxis(isSelected);
         });
 
         cbShowGrid.addActionListener(e ->
         {
             boolean isSelected = cbShowGrid.isSelected();
-                canvas.setShowGrid(isSelected);
+            canvas.setShowGrid(isSelected);
         });
 
-        cbShowPointCoord.addActionListener(e->{
+        cbShowPointCoord.addActionListener(e -> {
             canvas.setShowPointCoord(cbShowPointCoord.isSelected());
         });
 
