@@ -1,6 +1,6 @@
 # DemoGraphics
 
-Đồ án môn Kỹ thuật đồ họa
+Đồ án môn Kỹ thuật đồ họa PTIT
 
 ## Danh sách thành viên:
 
